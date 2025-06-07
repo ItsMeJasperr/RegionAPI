@@ -5,7 +5,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import nl.itsmejasperr.regionAPI.RegionAPI;
 import nl.itsmejasperr.regionAPI.events.RegionEnterEvent;
+import nl.itsmejasperr.regionAPI.utils.RegionAPIUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,29 +27,25 @@ public class RegionListener implements Listener {
         Player player = event.getPlayer();
         Location from = event.getFrom();
         Location to = event.getTo();
+        if (to == null) return;
 
-        RegionManager regionManager = WorldGuard.getInstance()
-                .getPlatform()
-                .getRegionContainer()
-                .get(new BukkitWorld(player.getWorld()));
-        if (regionManager == null) return;
+        RegionManager regionManager = RegionAPIUtils.getRegionManager(player.getWorld());
 
-        Set<String> fromRegions = regionManager.getApplicableRegions(BlockVector3.at(from.getX(), from.getY(), from.getZ()))
-                .getRegions().stream().map(ProtectedRegion::getId).collect(Collectors.toSet());
+        if(regionManager == null) return;
 
-        Set<String> toRegions = regionManager.getApplicableRegions(BlockVector3.at(to.getX(), to.getY(), to.getZ()))
-                .getRegions().stream().map(ProtectedRegion::getId).collect(Collectors.toSet());
+        BlockVector3 fromVec = BlockVector3.at(from.getX(), from.getY(), from.getZ());
+        BlockVector3 toVec = BlockVector3.at(to.getX(), to.getY(), to.getZ());
 
-        for (String toRegion : toRegions) {
-            if (!fromRegions.contains(toRegion)) {
-                RegionEnterEvent regionEnterEvent = new RegionEnterEvent(player, toRegion);
-                Bukkit.getPluginManager().callEvent(regionEnterEvent);
+        Set<String> fromRegions = regionManager.getApplicableRegions(fromVec).getRegions()
+                .stream()
+                .map(ProtectedRegion::getId)
+                .collect(Collectors.toSet());
 
-                if (regionEnterEvent.isCancelled()) {
-                    event.setCancelled(true);
-                    player.teleport(from);
-                    break;
-                }
+        for(ProtectedRegion region : regionManager.getApplicableRegions(toVec)){
+            String regionId = region.getId();
+            if(!fromRegions.contains(regionId)){
+                Bukkit.getPluginManager().callEvent(new RegionEnterEvent(player, regionId));
+                break;
             }
         }
     }
