@@ -1,11 +1,8 @@
 package nl.itsmejasperr.regionAPI.listener;
 
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import nl.itsmejasperr.regionAPI.RegionAPI;
 import nl.itsmejasperr.regionAPI.events.RegionEnterEvent;
 import nl.itsmejasperr.regionAPI.utils.RegionAPIUtils;
 import org.bukkit.Bukkit;
@@ -27,7 +24,6 @@ public class RegionListener implements Listener {
         Player player = event.getPlayer();
         Location from = event.getFrom();
         Location to = event.getTo();
-        if (to == null) return;
 
         RegionManager regionManager = RegionAPIUtils.getRegionManager(player.getWorld());
 
