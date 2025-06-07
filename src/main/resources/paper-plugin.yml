@@ -1,0 +1,14 @@
+name: RegionAPI
+version: '1.0-SNAPSHOT'
+main: nl.itsmejasperr.regionAPI.RegionAPI
+api-version: '1.21'
+authors:
+  - ItsMeJasperr
+dependencies:
+  server:
+    WorldGuard:
+      load: BEFORE
+      required: true
+    WorldEdit:
+      load: BEFORE
+      required: true
