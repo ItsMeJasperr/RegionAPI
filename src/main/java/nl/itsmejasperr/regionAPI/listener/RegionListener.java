@@ -1,4 +1,4 @@
-package nl.itsmejasperr.regionapi.listener;
+package nl.itsmejasperr.regionAPI.listener;
 
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
